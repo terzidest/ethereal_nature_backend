@@ -1,0 +1,52 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.5.5'
+	id 'io.spring.dependency-management' version '1.1.7'
+}
+
+group = 'example'
+version = '0.0.1-SNAPSHOT'
+description = 'Backend for Ethereal Nature e-shop'
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(17)
+	}
+}
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	compileOnly 'org.projectlombok:lombok'
+	runtimeOnly 'org.postgresql:postgresql'
+	annotationProcessor 'org.projectlombok:lombok'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.springframework.security:spring-security-test'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+	//JWT Depedencies
+	implementation 'io.jsonwebtoken:jjwt-api:0.12.5' // Use the latest stable version
+
+	// jjwt-impl: Provides the concrete implementation of the JJWT API.
+	implementation 'io.jsonwebtoken:jjwt-impl:0.12.5' // Use the same version as api
+
+	// jjwt-jackson: For JSON processing, required for parsing and generating JWTs.
+	// This typically pulls in Jackson Databind, which Spring Boot usually includes anyway.
+	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.5'
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
