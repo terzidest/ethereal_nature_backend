@@ -34,30 +34,36 @@ public class JwtFilter extends OncePerRequestFilter {
         }
 
         String header = request.getHeader("Authorization");
-        String username = null;
-        String token = null;
 
-        try {
-            if (header != null && header.startsWith("Bearer ")) {
-                token = header.substring(7);
-                username = jwtService.extractUsername(token);
-            }
 
-            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                UserDetails userDetails = userService.loadUserByUsername(username);
-                if (jwtService.isTokenValid(token, userDetails)) {
-                    UsernamePasswordAuthenticationToken authToken =
-                            new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                    authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                    SecurityContextHolder.getContext().setAuthentication(authToken);
+        if (header != null && header.startsWith("Bearer ")) {
+            String token = header.substring(7);
+
+            try {
+                String username = jwtService.extractUsername(token);
+
+                if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                    UserDetails userDetails = userService.loadUserByUsername(username);
+
+                    if (jwtService.isTokenValid(token, userDetails)) {
+                        UsernamePasswordAuthenticationToken authToken =
+                                new UsernamePasswordAuthenticationToken(userDetails,
+                                        null,
+                                        userDetails.getAuthorities()
+                                );
+                        authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                        SecurityContextHolder.getContext().setAuthentication(authToken);
+                    }
                 }
+            } catch (Exception e) {
+                logger.error("JWT processing failed: " + e.getMessage());
+                SecurityContextHolder.clearContext();
             }
-        } catch (Exception e) {
-            logger.error("JWT processing failed: " + e.getMessage());
-
-            SecurityContextHolder.clearContext();
+            try {
+                filterChain.doFilter(request, response);
+            } finally {
+                SecurityContextHolder.clearContext();
+            }
         }
-        filterChain.doFilter(request, response);
-
     }
 }

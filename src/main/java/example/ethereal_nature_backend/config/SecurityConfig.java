@@ -32,6 +32,7 @@ public class SecurityConfig {
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/products/**").hasAnyAuthority("USER", "ADMIN")
                         .requestMatchers(HttpMethod.POST, "/products/**").hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/products/**").hasAuthority("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/products/**").hasAuthority("ADMIN")
                         .anyRequest().authenticated()
                 )

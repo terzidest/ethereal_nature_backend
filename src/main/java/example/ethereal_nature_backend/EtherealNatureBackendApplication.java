@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class EtherealNatureBackendApplication {
 
 	public static void main(String[] args) {
+
 		SpringApplication.run(EtherealNatureBackendApplication.class, args);
 	}
 

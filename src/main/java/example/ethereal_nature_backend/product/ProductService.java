@@ -29,4 +29,22 @@ public class ProductService {
         }
         repo.deleteById(id);
     }
+    public Product updateProduct(Long id, Product product) {
+        Product existing = repo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Product not found"));
+
+        existing.setName(product.getName());
+        existing.setDescription(product.getDescription());
+        existing.setCategory(product.getCategory());
+        existing.setPrice(product.getPrice());
+
+        return repo.save(existing);
+    }
+
+    public Product getProductById(Long id) {
+        return repo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Product not found"));
+    }
+
+
 }
